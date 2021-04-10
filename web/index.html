@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="index.css" rel="stylesheet" />
+    <script src="./jquery-3.5.1.min.js"></script>
+    <style>
+        :root {
+            --grid-width: 30px;
+            --gird-heigth: 30px;
+        }
+
+        div.grid {
+            width: var(--grid-width);
+            height: var(--gird-heigth);
+            background-repeat: no-repeat;
+            float: left;
+            border: 1px solid gray;
+            box-sizing: border-box;
+            background-size: contain;
+        }
+
+        div.blank.grid {
+            background-image: url(./img/background.gif);
+        }
+
+        div.blank.grid:hover {
+            background-image: url(./img/background.gif);
+            cursor: pointer;
+
+        }
+
+        div.white.grid {
+            background-image: url(./img/whiteStone.gif);
+        }
+
+        div.black.grid {
+            background-image: url(./img/blackStone.gif);
+        }
+    </style>
+
+    <script src="./socket.io.js"></script>
+
+    
+</head>
+
+<body>
+    <div class="layer" id="layer">
+        <input type="text" id="userName" autofocus placeholder="请设置呢称" /><input id="btnSave" type="button" value="提交" />
+        <span class="tip">请设置呢称</span>
+    </div>
+    <div class="game-section"></div>
+    <script src="./game.js"></script>
+</body>
+
+</html>
