@@ -179,7 +179,9 @@ let colorSet = {
 
 
 // init board
-
+function init_gamer_info(self_name,opp_name){
+    $(".game-info").text(`${self_name} vs ${opp_name}`);
+}
 function init_board(board) {
     let gameBoard = $("div.game-section").empty();
     let container = $("<div class='container'>").width(board.w * 30).height(board.h * 30);
@@ -213,8 +215,8 @@ function init_board(board) {
             end_game(true);
         }
         is_your_turn = false;
-        // return new StepInfo(index / 15, index % 15, false);
     })
+    return container;
 }
 
 function updateBoard(x, y) {
@@ -260,6 +262,14 @@ window.onload = function () {
 
         if (socket) {
             socket.emit('login', new LoginInfo(sname));
+            let waitting_str="";
+            setInterval(()=>{
+                waitting_str+=".";
+                if(waitting_str=="....."){
+                    waitting_str="";
+                }
+                $("div.remind-info").text(`${sname}登录成功，正在匹配${waitting_str}`)
+            },500)
             
             // login success
             socket.on('begin_match', function (data) {
@@ -271,6 +281,7 @@ window.onload = function () {
                 board = new Board(15, 15);
                 oLayer.style.display = 'none';
                 init_board(board);
+                init_gamer_info(sname,data.name);
             });
 
             socket.on("step", function (data) {

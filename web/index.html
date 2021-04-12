@@ -22,6 +22,11 @@
             background-size: contain;
         }
 
+        div.game-section,.game-info{
+            margin: 0 auto;
+            width: fit-content;
+        }
+
         div.blank.grid {
             background-image: url(./img/background.gif);
         }
@@ -43,15 +48,20 @@
 
     <script src="./socket.io.js"></script>
 
-    
+
 </head>
 
 <body>
     <div class="layer" id="layer">
         <input type="text" id="userName" autofocus placeholder="请设置呢称" /><input id="btnSave" type="button" value="提交" />
         <span class="tip">请设置呢称</span>
+        <div class="remind-info"></div>
     </div>
-    <div class="game-section"></div>
+
+
+    <div class="game-info"></div>
+    <div class="game-section">
+    </div>
     <script src="./game.js"></script>
 </body>
 
