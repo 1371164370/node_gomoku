@@ -1,9 +1,5 @@
 @import '~antd/dist/antd.css';
 
-.site-layout-background {
-    background: #fff;
-}
-
 button.square {
     background-image: url("img/background.gif");
     background-size: contain;

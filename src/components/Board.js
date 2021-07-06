@@ -1,6 +1,6 @@
 import React from "react";
 import { Color, UserState } from "../utils"
-import { Button, Space, Tag } from 'antd';
+import { Button, message, Space, Tag } from 'antd';
 
 
 class Board extends React.Component {
@@ -70,7 +70,7 @@ class Board extends React.Component {
         console.log('was placed', this.state.squares, x, y);
         if (this.isWin(x, y, color)) {
             this.resetBoard();
-            setTimeout(_ => alert(`${Color.toString(color)} win!`), 100);
+            message.info(`${Color.toString(color)} win!`)
         };
     }
     scanInLine(x, y, color, pos_dir) {
@@ -120,7 +120,7 @@ class Board extends React.Component {
     }
     handleSquareClick(index) {
         if (this.state.yourcolor != this.state.turn) {
-            alert("its not your turn");
+            message.info("It's not your turn");
             return;
         }
         const [x, y] = this.index2xy(index);
@@ -134,7 +134,7 @@ class Board extends React.Component {
             this.placePiece(x, y);
             console.log('after place', this.state.squares);
         } else {
-            alert('illegal place');
+            message.info('illegal place');
         }
     }
     componentWillUnmount(){

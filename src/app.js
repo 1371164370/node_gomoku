@@ -5,9 +5,10 @@ import UserList from "./components/UserList";
 import React from "react";
 import ReactDOM from "react-dom"
 import { UserState, LoginInfo, Player } from "./utils"
-import { Layout, Button, Tag } from "antd"
+import { Layout, Button, Tag, message ,Tabs} from "antd"
 import './app.css';
 
+const {TabPane} = Tabs;
 const { Header, Content, Sider } = Layout;
 
 
@@ -54,8 +55,8 @@ class App extends React.Component {
             this.setState({
                 enemy: null
             })
-            this.socket.off('end_game')
-            setTimeout(() => alert(`${name} has leaved`, 100));
+            this.socket.off('end_game');
+            message.info(`${name} has leaved`);
         })
     }
     endGame() {
@@ -71,7 +72,7 @@ class App extends React.Component {
     createSocket() {
         this.socket = io(); // connect to server
         this.socket.on('connect_error', () => {
-            alert('failed to connect to server');
+            message.error('failed to connect to server');
             this.socket = null;
         });
     }
@@ -88,43 +89,43 @@ class App extends React.Component {
         const isLogin = (userstate != UserState.OFFLINE);
         console.log('isLogin', isLogin);
         const isNotMatching = (userstate != UserState.PENDING);
-
+        const isNotGaming = (userstate != UserState.GAMING);
         return (
             <Layout >
                 <Header style={{
                     justifyContent: "space-around",
                     display: "flex",
-                    alignItems: "center"
+                    alignItems: "center",
+                    backgroundColor: ""
                 }}>
                     <Tag color={UserState.toColor(userstate)}>
                         {UserState.toString(userstate)}
                     </Tag>
-                    {isLogin &&
+                    {isLogin && isNotGaming && 
                         (<Button onClick={isNotMatching ? this.startMatch : this.cancelMatch}>{isNotMatching ? '开始匹配' : '取消匹配'}</Button>)}
                     <LogBar handleLogin={this.handleLogin} userstate={this.state.userstate}
                         handleLogout={this.handleLogout} />
                 </Header>
 
-                <Content>
-                    <Layout>
-                        <Sider className="site-layout-background" width={200}>
-                            {isLogin && <UserList socket={this.socket} />}
+                <Layout>
+                    <Sider breakpoint={"sm"} style={{backgroundColor:"aliceblue"}}>
+                        {isLogin && <UserList socket={this.socket} />}
 
-                        </Sider>
-                        <Content className="site-layout-background">
-                            {isLogin && <ChatRoom username={this.state.username} socket={this.socket} />}
-                        </Content>
-                        <Content>
-                            {this.state.enemy &&
-                                <section>
-                                    <div>{this.state.username} vs {this.state.enemy.name}</div>
-                                    <Board cols_num="10" rows_num="10" square_size="30" enemy={this.state.enemy} socket={this.socket} endGame={this.endGame} />
+                    </Sider>
+                    <Content>
+                        <Tabs>
+                            <TabPane tab={"Chat Room"} key="1">{isLogin && <ChatRoom username={this.state.username} socket={this.socket} />}</TabPane>
+                            <TabPane tab={"Game Room"} key="2">{this.state.enemy &&
+                            <section>
+                                <div>{this.state.username} vs {this.state.enemy.name}</div>
+                                <Board cols_num="10" rows_num="10" square_size="30" enemy={this.state.enemy} socket={this.socket} endGame={this.endGame} />
 
-                                </section>}
-                        </Content>
+                            </section>}</TabPane>
+                        </Tabs>
+                    
+                    </Content>
 
-                    </Layout>
-                </Content>
+                </Layout>
             </Layout>
         )
     }
