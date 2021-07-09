@@ -5,10 +5,10 @@ import UserList from "./components/UserList";
 import React from "react";
 import ReactDOM from "react-dom"
 import { UserState, LoginInfo, Player } from "./utils"
-import { Layout, Button, Tag, message ,Tabs} from "antd"
+import { Layout, Button, Tag, message, Tabs, Card } from "antd"
 import './app.css';
 
-const {TabPane} = Tabs;
+const { TabPane } = Tabs;
 const { Header, Content, Sider } = Layout;
 
 
@@ -101,28 +101,29 @@ class App extends React.Component {
                     <Tag color={UserState.toColor(userstate)}>
                         {UserState.toString(userstate)}
                     </Tag>
-                    {isLogin && isNotGaming && 
+                    {isLogin && isNotGaming &&
                         (<Button onClick={isNotMatching ? this.startMatch : this.cancelMatch}>{isNotMatching ? '开始匹配' : '取消匹配'}</Button>)}
                     <LogBar handleLogin={this.handleLogin} userstate={this.state.userstate}
                         handleLogout={this.handleLogout} />
                 </Header>
 
-                <Layout>
-                    <Sider breakpoint={"sm"} style={{backgroundColor:"aliceblue"}}>
+                <Layout style={{ backgroundColor: '#ececec', padding: 30 }}>
+                    <Sider breakpoint={"sm"} style={{ backgroundColor: "#ececec" }}>
                         {isLogin && <UserList socket={this.socket} />}
 
                     </Sider>
                     <Content>
-                        <Tabs>
-                            <TabPane tab={"Chat Room"} key="1">{isLogin && <ChatRoom username={this.state.username} socket={this.socket} />}</TabPane>
-                            <TabPane tab={"Game Room"} key="2">{this.state.enemy &&
-                            <section>
-                                <div>{this.state.username} vs {this.state.enemy.name}</div>
-                                <Board cols_num="10" rows_num="10" square_size="30" enemy={this.state.enemy} socket={this.socket} endGame={this.endGame} />
+                        <Card>
+                            <Tabs>
+                                <TabPane tab={"Chat Room"} key="1">{isLogin && <ChatRoom username={this.state.username} socket={this.socket} />}</TabPane>
+                                <TabPane tab={"Game Room"} key="2">{this.state.enemy &&
+                                    <section>
+                                        <div>{this.state.username} vs {this.state.enemy.name}</div>
+                                        <Board cols_num="10" rows_num="10" square_size="30" enemy={this.state.enemy} socket={this.socket} endGame={this.endGame} />
 
-                            </section>}</TabPane>
-                        </Tabs>
-                    
+                                    </section>}</TabPane>
+                            </Tabs>
+                        </Card>
                     </Content>
 
                 </Layout>
