@@ -1,4 +1,4 @@
-import { Tag,Button,Space,List } from "antd";
+import { Tag,Button,Card,List } from "antd";
 import { Color, UserState } from "../utils"
 import React from 'react';
 
@@ -30,13 +30,13 @@ class UserList extends React.Component {
     }
     render() {
         return (
-            <>
-            <List bordered size="small" header={<div>在线用户:</div>} dataSource={this.state.userlist} renderItem={(user) =>(
-                <List.Item>
+            <Card title={'在线用户'}>
+                {this.state.userlist.map((user) =>(
+                <div>
                     <Tag color={UserState.toColor(user.state)}>
                 {UserState.toString(user.state)}</Tag>{user.name}
-                </List.Item>)}/>
-            </>
+                </div>))}
+            </Card>
             
         )
     }

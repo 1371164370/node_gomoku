@@ -1,7 +1,8 @@
 import React from 'react';
-import { Input, Button, Divider } from 'antd';
+import { Input, Button, Divider, message } from 'antd';
 import { Message } from '../utils'
 import { Layout } from 'antd';
+import Form from './Form'
 import './ChatRoom.css'
 
 const { TextArea } = Input;
@@ -13,10 +14,9 @@ class ChatRoom extends React.Component {
         super(props)
         this.state = {
             msglist: [],
-            curinput: ""
         }
 
-        this.handleInputChange = this.handleInputChange.bind(this);
+        this.scrollContainer=React.createRef();
         this.sendMsg = this.sendMsg.bind(this);
     }
     componentDidMount() {
@@ -33,41 +33,43 @@ class ChatRoom extends React.Component {
             };
         })
     }
-    handleInputChange(e) {
-        this.setState({
-            curinput: e.target.value
-        })
-    }
     componentWillUnmount() {
         this.props.socket.off('receive_msg');
     }
-    sendMsg() {
-        const msg = new Message(this.props.username, this.state.curinput)
+    sendMsg(curInput) {
+        const msg = new Message(this.props.username,curInput)
         this.props.socket.emit('send_msg', msg);
         msg.type = Message.SELF;
         this.addMsg(msg);
+    }
+    getSnapshotBeforeUpdate(){
+        const curNode=this.scrollContainer.current;
+        // message.info(curNode.scrollTop,curNode.scrollHeight,curNode.clientHeight);
+        return curNode.scrollTop>=curNode.scrollHeight-curNode.clientHeight-5
+        && curNode.scrollTop<=curNode.scrollHeight-curNode.clientHeight+5;
+    }
+    componentDidUpdate(nextProps,nextState,atBottom){
+        const curNode=this.scrollContainer.current;
+        if(atBottom){
+            curNode.scrollTop=curNode.scrollHeight-curNode.clientHeight
+        }else{
+            message.info(`新消息`);
+        }
     }
     render() {
 
 
         return (
             <Layout>
-                <h1>ChatRoom</h1>
-                <section className="msg-box noscroll" onScroll={db_scrollFadeout}>
+                <section className="msg-box noscroll" onScroll={db_scrollFadeout} ref={this.scrollContainer}>
                     {this.state.msglist.map(msg => {
                         return (
                             <OneMessage msg={msg} />
                         )
                     })}
                 </section>
-                <Footer>
-                    <form onSubmit={(e) => { e.preventDefault(); return false; }}>
-                        <label>
-                            <input onChange={this.handleInputChange} />
-                        </label>
-                        <Button type="primary" htmlType="submit" onClick={this.sendMsg}>发送</Button>
-
-                    </form>
+                <Footer style={{backgroundColor:'GrayText'}}>
+                    <Form  btnText={'发送'} sendMsg={this.sendMsg}/>
                 </Footer>
             </Layout>
         )
