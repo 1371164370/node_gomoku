@@ -6,7 +6,7 @@ import React from "react";
 import ReactDOM from "react-dom"
 import { UserState, LoginInfo, Player } from "./utils"
 import { Layout, Button, Tag, message, Tabs, Card } from "antd"
-import './app.css';
+import 'antd/dist/antd.css';
 
 const { TabPane } = Tabs;
 const { Header, Content, Sider } = Layout;

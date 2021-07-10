@@ -36,6 +36,6 @@ module.exports = {
         port:8000,
         contentBase: path.resolve(__dirname, 'public'),
         inline:true,
-        hot:true
+        hot:true,
       }
 };

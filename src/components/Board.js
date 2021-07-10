@@ -1,6 +1,7 @@
 import React from "react";
 import { Color, UserState } from "../utils"
 import { Button, message, Space, Tag } from 'antd';
+import "./Board.css"
 
 
 class Board extends React.Component {
@@ -16,7 +17,7 @@ class Board extends React.Component {
             yourcolor: Color.oppositeColor(this.props.enemy.color)
         };
         this.handleSquareClick = this.handleSquareClick.bind(this);
-
+        this.squareContainer=React.createRef();
     }
     resetBoard() {
         this.setState(() => {
@@ -43,6 +44,10 @@ class Board extends React.Component {
         const [x, y] = [parseInt(index / cols), index % cols];
         console.log('x,y', x, y);
         return [x, y];
+    }
+    xy2index(x,y){
+        const cols = this.props.cols_num;
+        return x*cols+y;
     }
     isLegal(x, y) {
         if (this.state.squares[x][y] || this.isOutOfBound(x, y)) {
@@ -72,6 +77,11 @@ class Board extends React.Component {
             this.resetBoard();
             message.info(`${Color.toString(color)} win!`)
         };
+        this.focusSquare(x,y);
+    }
+    focusSquare(x,y){
+        const index=this.xy2index(x,y);
+        this.squareContainer.current.children[index].focus();
     }
     scanInLine(x, y, color, pos_dir) {
         const neg_dir = [-pos_dir[0], -pos_dir[1]];
@@ -153,7 +163,7 @@ class Board extends React.Component {
         return (
             <div>
                 Next turn:{Color.toString(this.state.turn)} | Your piece color:{Color.toString(this.state.yourcolor)}
-                <div className="board" style={style}>
+                <div className="board" style={style} ref={this.squareContainer}>
                     {boardItems}
                 </div>
                 <div>
@@ -166,7 +176,6 @@ class Board extends React.Component {
 class Square extends React.Component {
     constructor(props) {
         super(props);
-
         this.handleClick = this.handleClick.bind(this);
     }
     handleClick(e) {

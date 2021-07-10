@@ -115,46 +115,36 @@ class Match {
         this.players[1].socket.emit('begin_game', new EnemyInfo(player0.name, player0.color));
 
         this.players[0].addEvent('step', (info) => {
-            this.handle_step(0, info);
+            this.handle_step(this.players[0], info);
         });
         this.players[1].addEvent('step', (info) => {
-            this.handle_step(1, info);
+            this.handle_step(this.players[1], info);
         });
 
         this.players[0].addEvent('end_game', () => {
-            this.handle_end(0);
+            this.handle_end(this.players[0]);
         })
         this.players[1].addEvent('end_game', () => {
-            this.handle_end(1);
+            this.handle_end(this.players[1]);
         })
     }
-    handle_step(idx, info) {
+    handle_step(player,info) {
         // forward info to another player
-        var player = this.players[idx];
         console.log(player.name + ' step(' + info.x + ', ' + info.y + ')');
-        var other_player = this.players[(idx + 1) % 2];
+        const other_player = this.players.find(p=>p!=player);
         other_player.socket.emit('step', info);
     }
-    handle_end(idx) {
+    handle_end(player) {
         // forward info to another player
-        var player = this.players[idx];
         player.proxy.state = UserState.ONLINE;
         player.match=null;
         console.log(player.name, 'end_game');
         player.removeEvent('step');
-        var other_player = this.players[(idx + 1) % 2];
+        const other_player = this.players.find(p=>p!=player);
         other_player.proxy.state = UserState.ONLINE;
         other_player.socket.emit('end_game', player.name);
         other_player.match=null;
         other_player.removeEvent('step');
-    }
-    player_disconnect(player) {
-        this.players = this.players.filter((v) => {
-            return v != player;
-        });
-        if (this.players.length == 0) {
-            console.log('match finished');
-        }
     }
 }
 
@@ -189,7 +179,7 @@ class Player {
             broadcastUserListChange(this);
             console.log(`player ${this.name} disconnected (${UserState.toString(this.proxy.state)})`)
             if (this.proxy.state == UserState.GAMING) {
-                this.match = null;
+                this.match.handle_end(this);
             } else if (this.proxy.state == UserState.PENDING) {
                 // remove from pending list
                 g_pending_players = g_pending_players.filter((v) => {

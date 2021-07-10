@@ -1,0 +1,16 @@
+button.square {
+    background-image: url("../img/background.gif");
+    background-size: contain;
+}
+
+button.square.white {
+    background-image: url("../img/whiteStone.gif");
+}
+
+button.square.black {
+    background-image: url("../img/blackStone.gif");
+}
+button.square:focus {
+    border: 3px solid mediumslateblue;
+}
+
